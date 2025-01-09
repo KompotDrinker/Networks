@@ -61,5 +61,15 @@ test_dataset = (
 )
 
 # Building model
-# Encountered error with embedded dims, increasing dim fixes problem
-ner_model = model.NERModel(tag_length, vocab_size, embed_size=32, num_heads=4, filter_size=64)
+ner_model = model.NERModel(tag_length, vocab_size, embed_size=128, num_heads=4, filter_size=64)
+
+tf.config.run_functions_eagerly(True)
+
+# Compiling model, training and saving weights
+ner_model.compile(optimizer="Adam", loss=keras.losses.SparseCategoricalCrossentropy(from_logits=False, reduction=None), metrics=['accuracy'])
+ner_model.fit(train_dataset, epochs=5,validation_data=test_dataset)
+ner_model.save_weights('./NER/trainedModels/nerModel')
+
+with open('./NER/trainedModels/data', "w", encoding="utf-8") as f:
+    f.write(tag_length)
+    f.write(vocab_size)

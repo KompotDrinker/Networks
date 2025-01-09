@@ -2,6 +2,7 @@ import keras
 from keras import ops
 from keras import layers
 import tensorflow as tf
+
 class TransformerBlock(layers.Layer):
     def __init__(self, embed_dim, num_heads, ff_dim, rate=0.1):
         super().__init__()
@@ -46,13 +47,13 @@ class TokenAndPositionEmbedding(layers.Layer):
 
 class NERModel(keras.Model):
     def __init__(
-        self, num_tags, vocab_size, maxlen=1024, embed_dim=32, num_heads=2, ff_dim=32
+        self, num_tags, vocab_size, maxlen=1024, embed_size=32, num_heads=2, filter_size=32
     ):
         super().__init__()
-        self.embedding_layer = TokenAndPositionEmbedding(maxlen, vocab_size, embed_dim)
-        self.transformer_block = TransformerBlock(embed_dim, num_heads, ff_dim)
+        self.embedding_layer = TokenAndPositionEmbedding(maxlen, vocab_size, embed_size)
+        self.transformer_block = TransformerBlock(embed_size, num_heads, filter_size)
         self.dropout1 = layers.Dropout(0.1)
-        self.ff = layers.Dense(ff_dim, activation="relu")
+        self.ff = layers.Dense(filter_size, activation="relu")
         self.dropout2 = layers.Dropout(0.1)
         self.ff_final = layers.Dense(num_tags, activation="softmax")
 
