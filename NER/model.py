@@ -50,18 +50,18 @@ class NERModel(keras.Model):
         self, num_tags, vocab_size, maxlen=1024, embed_size=32, num_heads=2, filter_size=32
     ):
         super().__init__()
-        self.embedding_layer = TokenAndPositionEmbedding(maxlen, vocab_size, embed_size)
+        self.input_layer = TokenAndPositionEmbedding(maxlen, vocab_size, embed_size)
         self.transformer_block = TransformerBlock(embed_size, num_heads, filter_size)
         self.dropout1 = layers.Dropout(0.1)
-        self.ff = layers.Dense(filter_size, activation="relu")
+        self.dence = layers.Dense(filter_size, activation="relu")
         self.dropout2 = layers.Dropout(0.1)
-        self.ff_final = layers.Dense(num_tags, activation="softmax")
+        self.out = layers.Dense(num_tags, activation="softmax")
 
     def call(self, inputs, training=False):
-        x = self.embedding_layer(inputs)
+        x = self.input_layer(inputs)
         x = self.transformer_block(x)
         x = self.dropout1(x, training=training)
-        x = self.ff(x)
+        x = self.dence(x)
         x = self.dropout2(x, training=training)
-        x = self.ff_final(x)
+        x = self.out(x)
         return x

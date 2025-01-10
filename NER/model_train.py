@@ -38,6 +38,7 @@ tag_length = len(mapping)
 vocab_size = 20000
 vocabulary = [token for token, count in counter.most_common(vocab_size - 2)]
 
+print(type(vocabulary))
 # Convert tokens to token ids
 StringLookup = keras.layers.StringLookup(vocabulary=vocabulary)
 
@@ -63,13 +64,26 @@ test_dataset = (
 # Building model
 ner_model = model.NERModel(tag_length, vocab_size, embed_size=128, num_heads=4, filter_size=64)
 
+with open('./NER/trainedModels/data', "w", encoding="utf-8") as f:
+    f.write(str(tag_length)+"\n")
+    f.write(str(vocab_size)+"\n")
+    f.write(str(mapping)+"\n")
+    f.write(str(vocabulary)+"\n")
+    for items in vocabulary:
+        f.write('%s\n' %items)
+
+
 tf.config.run_functions_eagerly(True)
+
+
+
 
 # Compiling model, training and saving weights
 ner_model.compile(optimizer="Adam", loss=keras.losses.SparseCategoricalCrossentropy(from_logits=False, reduction=None), metrics=['accuracy'])
-ner_model.fit(train_dataset, epochs=5,validation_data=test_dataset)
-ner_model.save_weights('./NER/trainedModels/nerModel')
+ner_model.fit(train_dataset, epochs=3,validation_data=test_dataset)
 
-with open('./NER/trainedModels/data', "w", encoding="utf-8") as f:
-    f.write(tag_length)
-    f.write(vocab_size)
+ner_model.summary()
+ner_model.save_weights('./NER/trainedModels/nerModel.weights.h5')
+ner_model.save('./NER/trainedModels/nerModel.keras')
+
+
