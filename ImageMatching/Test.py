@@ -7,7 +7,7 @@ image_paths=dataProcessor.search_data()
 images=dataProcessor.reader(image_paths,[0,9])
 
 # Create matcher instance object
-matcherInst = matcher.Matcher((1098, 1098))
+matcherInst = matcher.Matcher((1024, 1024))
 
 # Calculate matching points of two images
 corresp = matcherInst(images[0], images[1], 0.9, False)
